@@ -26,6 +26,7 @@ $ gem install robotx
 
 ## Usage
 ### Support for different user agents
+Robotx can be initialized with a special user agent. The default user agent is '*'.
 ~~~ruby
 require 'robotx'
 
@@ -33,36 +34,36 @@ require 'robotx'
 robots_txt = Robotx.new('https://github.com')
 robots_txt.allowed  # => ["/humans.txt"]
 
-# Initialize with googlebot as user agent
+# Initialize with 'googlebot' as user agent
 robots_txt = Robotx.new('https://github.com', 'googlebot')
 robots_txt.allowed # => ["/*/*/tree/master", "/*/*/blob/master"]
 ~~~
 
 ### Check whether an URL is allowed to be indexed
+The result of this method depends on the user agent Robotx was initialized with.
 ~~~ruby
 require 'robotx'
 
-# Initialized with the default user agent '*'
 robots_txt = Robotx.new('https://github.com')
 robots_txt.allowed?('/humans.txt')  # => true
 robots_txt.allowed?('/')  # => false
 ~~~
 
 ### Get all allowed/disallowed URLs
+The result of this method depends on the user agent Robotx was initialized with.
 ~~~ruby
 require 'robotx'
 
-# Initialize with the default user agent '*'
 robots_txt = Robotx.new('https://github.com')
 robots_txt.allowed  # => ["/humans.txt"]
 robots_txt.disallowed  # => ["/"]
 ~~~
 
 ### Get additional information
+The result of this method depends on the user agent Robotx was initialized with.
 ~~~ruby
 require 'robotx'
 
-# Initialize with the default user agent '*'
 robots_txt = Robotx.new('https://github.com')
 robots_txt.sitemap  # => []
 robots_txt.crawl_delay  # => 0

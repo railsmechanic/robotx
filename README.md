@@ -26,7 +26,7 @@ $ gem install robotx
 
 ## Usage
 ### Support for different user agents
-Robotx can be initialized with a special user agent. The default user agent is '*'.
+Robotx can be initialized with a special user agent. The default user agent is '\*'.
 **Please note:** All method results depends on the user agent Robotx was initialized with.
 ~~~ruby
 require 'robotx'

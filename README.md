@@ -47,6 +47,9 @@ require 'robotx'
 robots_txt = Robotx.new('https://github.com')
 robots_txt.allowed?('/humans.txt')  # => true
 robots_txt.allowed?('/')  # => false
+
+# The allowed? method can also handle arrays or URIs/paths
+robots_txt.allowed?(['/', '/humans.txt'])  # => {"/"=>false, "/humans.txt"=>true}
 ~~~
 
 ### Get all allowed/disallowed URLs

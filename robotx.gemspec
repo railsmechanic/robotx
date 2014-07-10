@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "robotx"
-  spec.version       = "0.1.0"
+  spec.version       = "0.1.1"
   spec.authors       = ["Matthias Kalb"]
   spec.email         = ["matthias.kalb@railsmechanic.de"]
   spec.summary       = %q{A parser for the robots.txt file}

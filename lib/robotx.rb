@@ -77,24 +77,24 @@ private
           hash[agent] ||= {}
         when 'allow'
           hash[agent]['allow'] ||= []
-          hash[agent]['allow'] << value.sub(/(\/){2,}$/, '')
+          hash[agent]['allow'] << strip_slashes(value)
         when 'disallow'
-          # Disallow: '' means Allow: '/'
+          # Disallow: '' equals Allow: '/'
           if value.empty?
             hash[agent]['allow'] ||= []
             hash[agent]['allow'] << '/'
           else
             hash[agent]['disallow'] ||= []
-            hash[agent]['disallow'] << value.sub(/(\/){2,}$/, '')
+            hash[agent]['disallow'] << strip_slashes(value)
           end
         when 'crawl-delay'
           hash[agent]['crawl-delay'] = value.to_i
         when 'sitemap'
           hash['sitemap'] ||= []
-          hash['sitemap'] << value.sub(/(\/){2,}$/, '')
+          hash['sitemap'] << strip_slashes(value).sub(/\/*$/, '')
         else
           hash[key] ||= []
-          hash[key] << value.sub(/(\/){2,}$/, '')
+          hash[key] << strip_slashes(value)
         end
       end
     end
@@ -102,13 +102,30 @@ private
     {}
   end
 
+  def strip_slashes(value='')
+    return value.sub(/\/*$/, '/')
+  end
+
+  def regex_value(value='')
+    return strip_slashes(value).gsub(/\*/,'.*').gsub(/\?/,'\?')
+  end
+
+  def disallow_regex
+    disallow_data = @robots_data.fetch(@user_agent, {}).fetch('disallow', [])
+    @disallow_regex ||= disallow_data.empty? ? nil : Regexp.compile(disallow_data.map { |uri| "^#{regex_value(uri)}" }.join("|"))
+  end
+
+  def allow_regex
+    allow_data = @robots_data.fetch(@user_agent, {}).fetch('allow', [])
+    @allow_regex ||= allow_data.empty? ? nil : Regexp.compile(allow_data.map { |uri| "^#{regex_value(uri)}" }.join("|"))
+  end
+
   def check_permission(uri)
     uri = URI.parse(URI.encode(uri))
     return true unless (@robots_data or @robots_data.any?) or (uri.scheme and uri.host)
 
-    uri_path = uri.path.sub(/(\/){2,}$/, '')
-    pattern  = Regexp.compile("(^#{Regexp.escape(uri_path)}[\/]*$)|(^/$)")
-    return (@robots_data.fetch(@user_agent, {}).fetch('disallow', []).grep(pattern).empty? or @robots_data.fetch(@user_agent, {}).fetch('allow', []).grep(pattern).any?)
+    uri_path = strip_slashes(uri.path)
+    return (!!!(uri_path =~ disallow_regex) or !!(uri_path =~ allow_regex))
   end
 
 end
